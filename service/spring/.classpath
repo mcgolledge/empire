@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-14">
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
 		<attributes>
-			<attribute name="module" value="true"/>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/usr/local/commons-logging-1.2/commons-logging-1.2.jar"/>
-	<classpathentry kind="lib" path="/usr/local/spring-framework-5.3.4/libs/spring-aop-5.3.4.jar"/>
-	<classpathentry kind="lib" path="/usr/local/spring-framework-5.3.4/libs/spring-aspects-5.3.4.jar"/>
-	<classpathentry kind="lib" path="/usr/local/spring-framework-5.3.4/libs/spring-beans-5.3.4.jar"/>
-	<classpathentry kind="lib" path="/usr/local/spring-framework-5.3.4/libs/spring-context-5.3.4.jar"/>
-	<classpathentry kind="lib" path="/usr/local/spring-framework-5.3.4/libs/spring-core-5.3.4.jar"/>
-	<classpathentry kind="lib" path="/usr/local/spring-framework-5.3.4/libs/spring-expression-5.3.4.jar"/>
-	<classpathentry kind="lib" path="/usr/local/spring-framework-5.3.4/libs/spring-instrument-5.3.4.jar"/>
-	<classpathentry kind="lib" path="/usr/local/spring-framework-5.3.4/libs/spring-jdbc-5.3.4.jar"/>
-	<classpathentry kind="lib" path="/usr/local/spring-framework-5.3.4/libs/spring-jms-5.3.4.jar"/>
-	<classpathentry kind="lib" path="/usr/local/spring-framework-5.3.4/libs/spring-messaging-5.3.4.jar"/>
-	<classpathentry kind="lib" path="/usr/local/spring-framework-5.3.4/libs/spring-orm-5.3.4.jar"/>
-	<classpathentry kind="lib" path="/usr/local/spring-framework-5.3.4/libs/spring-oxm-5.3.4.jar"/>
-	<classpathentry kind="lib" path="/usr/local/spring-framework-5.3.4/libs/spring-test-5.3.4.jar"/>
-	<classpathentry kind="lib" path="/usr/local/spring-framework-5.3.4/libs/spring-tx-5.3.4.jar"/>
-	<classpathentry kind="lib" path="/usr/local/spring-framework-5.3.4/libs/spring-web-5.3.4.jar"/>
-	<classpathentry kind="lib" path="/usr/local/spring-framework-5.3.4/libs/spring-webmvc-5.3.4.jar"/>
-	<classpathentry kind="lib" path="/usr/local/spring-framework-5.3.4/libs/spring-websocket-5.3.4.jar"/>
-	<classpathentry kind="lib" path="/usr/local/spring-framework-5.3.4/libs/spring-context-indexer-5.3.4.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="test" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-15">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>
