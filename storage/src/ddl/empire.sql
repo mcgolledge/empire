@@ -16,8 +16,11 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+ALTER TABLE ONLY game.planet DROP CONSTRAINT planet_owner_fkey;
+ALTER TABLE ONLY game.fleet DROP CONSTRAINT fleet_owner_fkey;
 DROP INDEX config.player_id_idx;
 ALTER TABLE ONLY game.fleet DROP CONSTRAINT fleet_primary;
+ALTER TABLE ONLY config.player DROP CONSTRAINT player_id_key;
 ALTER TABLE ONLY config.player DROP CONSTRAINT player_id;
 ALTER TABLE game.planet ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE config.player ALTER COLUMN id DROP DEFAULT;
@@ -66,11 +69,11 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: player; Type: TABLE; Schema: config
+-- Name: player; Type: TABLE; Schema: config; Owner: golledge
 --
 
 CREATE TABLE config.player (
-    id integer NOT NULL unique,
+    id integer NOT NULL,
     name character varying(40) NOT NULL,
     color integer NOT NULL,
     CONSTRAINT color_3_byte CHECK ((color <= 16777215)),
@@ -81,28 +84,28 @@ CREATE TABLE config.player (
 ALTER TABLE config.player OWNER TO golledge;
 
 --
--- Name: TABLE player; Type: COMMENT; Schema: config; Owner: postgres
+-- Name: TABLE player; Type: COMMENT; Schema: config; Owner: golledge
 --
 
 COMMENT ON TABLE config.player IS 'Player attributes.';
 
 
 --
--- Name: COLUMN player.name; Type: COMMENT; Schema: config; Owner: postgres
+-- Name: COLUMN player.name; Type: COMMENT; Schema: config; Owner: golledge
 --
 
 COMMENT ON COLUMN config.player.name IS 'Limit to 40 to avoid UI problems with very long names.';
 
 
 --
--- Name: COLUMN player.color; Type: COMMENT; Schema: config; Owner: postgres
+-- Name: COLUMN player.color; Type: COMMENT; Schema: config; Owner: golledge
 --
 
 COMMENT ON COLUMN config.player.color IS 'Stored as a 3-byte triplet. The upper byte is not used.';
 
 
 --
--- Name: player_id_seq; Type: SEQUENCE; Schema: config; Owner: postgres
+-- Name: player_id_seq; Type: SEQUENCE; Schema: config; Owner: golledge
 --
 
 CREATE SEQUENCE config.player_id_seq
@@ -117,7 +120,7 @@ CREATE SEQUENCE config.player_id_seq
 ALTER TABLE config.player_id_seq OWNER TO golledge;
 
 --
--- Name: player_id_seq; Type: SEQUENCE OWNED BY; Schema: config; Owner: postgres
+-- Name: player_id_seq; Type: SEQUENCE OWNED BY; Schema: config; Owner: golledge
 --
 
 ALTER SEQUENCE config.player_id_seq OWNED BY config.player.id;
@@ -143,10 +146,10 @@ ALTER TABLE game.fleet_id_seq OWNER TO golledge;
 
 CREATE TABLE game.fleet (
     id integer DEFAULT nextval('game.fleet_id_seq'::regclass) NOT NULL,
-    owner integer REFERENCES config.player(id),
+    owner integer,
     destination integer NOT NULL,
     num_ships integer NOT NULL,
-    CONSTRAINT ships_positive CHECK (num_ships > 0)
+    CONSTRAINT ships_positive CHECK ((num_ships > 0))
 );
 
 
@@ -193,13 +196,13 @@ COMMENT ON CONSTRAINT ships_positive ON game.fleet IS 'The number of ships must 
 
 CREATE TABLE game.planet (
     id integer NOT NULL,
-    owner integer REFERENCES config.player(id),
+    owner integer,
     production integer NOT NULL,
     x smallint NOT NULL,
     y smallint NOT NULL,
     is_known boolean,
     name text NOT NULL,
-    CONSTRAINT production_positive CHECK (production > 0)
+    CONSTRAINT production_positive CHECK ((production > 0))
 );
 
 
@@ -213,7 +216,7 @@ COMMENT ON TABLE game.planet IS 'Information specific to planets is stored in th
 
 
 --
--- Name: COLUMN planet.player; Type: COMMENT; Schema: game; Owner: golledge
+-- Name: COLUMN planet.owner; Type: COMMENT; Schema: game; Owner: golledge
 --
 
 COMMENT ON COLUMN game.planet.owner IS 'ID of the player who owns the planet.';
@@ -263,7 +266,7 @@ ALTER SEQUENCE game.planet_id_seq OWNED BY game.planet.id;
 
 
 --
--- Name: player id; Type: DEFAULT; Schema: config; Owner: postgres
+-- Name: player id; Type: DEFAULT; Schema: config; Owner: golledge
 --
 
 ALTER TABLE ONLY config.player ALTER COLUMN id SET DEFAULT nextval('config.player_id_seq'::regclass);
@@ -275,8 +278,33 @@ ALTER TABLE ONLY config.player ALTER COLUMN id SET DEFAULT nextval('config.playe
 
 ALTER TABLE ONLY game.planet ALTER COLUMN id SET DEFAULT nextval('game.planet_id_seq'::regclass);
 
+
 --
--- Name: player_id_seq; Type: SEQUENCE SET; Schema: config; Owner: postgres
+-- Data for Name: player; Type: TABLE DATA; Schema: config; Owner: golledge
+--
+
+COPY config.player (id, name, color) FROM stdin;
+\.
+
+
+--
+-- Data for Name: fleet; Type: TABLE DATA; Schema: game; Owner: golledge
+--
+
+COPY game.fleet (id, owner, destination, num_ships) FROM stdin;
+\.
+
+
+--
+-- Data for Name: planet; Type: TABLE DATA; Schema: game; Owner: golledge
+--
+
+COPY game.planet (id, owner, production, x, y, is_known, name) FROM stdin;
+\.
+
+
+--
+-- Name: player_id_seq; Type: SEQUENCE SET; Schema: config; Owner: golledge
 --
 
 SELECT pg_catalog.setval('config.player_id_seq', 1, false);
@@ -297,11 +325,19 @@ SELECT pg_catalog.setval('game.planet_id_seq', 1, false);
 
 
 --
--- Name: player player_id; Type: CONSTRAINT; Schema: config; Owner: postgres
+-- Name: player player_id; Type: CONSTRAINT; Schema: config; Owner: golledge
 --
 
 ALTER TABLE ONLY config.player
     ADD CONSTRAINT player_id PRIMARY KEY (id);
+
+
+--
+-- Name: player player_id_key; Type: CONSTRAINT; Schema: config; Owner: golledge
+--
+
+ALTER TABLE ONLY config.player
+    ADD CONSTRAINT player_id_key UNIQUE (id);
 
 
 --
@@ -313,17 +349,33 @@ ALTER TABLE ONLY game.fleet
 
 
 --
--- Name: player_id_idx; Type: INDEX; Schema: config; Owner: postgres
+-- Name: player_id_idx; Type: INDEX; Schema: config; Owner: golledge
 --
 
 CREATE UNIQUE INDEX player_id_idx ON config.player USING btree (id);
 
 
 --
--- Name: INDEX player_id_idx; Type: COMMENT; Schema: config; Owner: postgres
+-- Name: INDEX player_id_idx; Type: COMMENT; Schema: config; Owner: golledge
 --
 
 COMMENT ON INDEX config.player_id_idx IS 'Primary index on player table';
+
+
+--
+-- Name: fleet fleet_owner_fkey; Type: FK CONSTRAINT; Schema: game; Owner: golledge
+--
+
+ALTER TABLE ONLY game.fleet
+    ADD CONSTRAINT fleet_owner_fkey FOREIGN KEY (owner) REFERENCES config.player(id);
+
+
+--
+-- Name: planet planet_owner_fkey; Type: FK CONSTRAINT; Schema: game; Owner: golledge
+--
+
+ALTER TABLE ONLY game.planet
+    ADD CONSTRAINT planet_owner_fkey FOREIGN KEY (owner) REFERENCES config.player(id);
 
 
 --
