@@ -1,0 +1,5 @@
+This implementation is a learning exercise in Spring for me. So, it is designed to try to leverage Spring capabilities, and the overall architecture may or may not be what would be done without having that as a goal. I am leveraging an implementation done in plain Java I did some years ago.
+
+Also, I am experimenting with making user actions durable immediately instead of having to activate a Save button.
+
+A relational DBMS is used (PostgreSQL), and that is a bit of overkill in terms of what a small program like this needs, but again, it is more of a learning exercise than something like a commercial work.
