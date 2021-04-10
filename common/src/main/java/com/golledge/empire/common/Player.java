@@ -22,16 +22,14 @@ public class Player
     public static final Player neutral = new Player("Guisan", new Color(200,
             200, 215));
 
+    private Color color;
     private String name;
+    private int foo;
 
-    public String getName()
-    {
-        return name;
-    }
-
-    public void setName(String name)
+    public Player(String name, Color color)
     {
         this.name = name;
+        this.color = color;
     }
 
     public Color getColor()
@@ -39,19 +37,21 @@ public class Player
         return color;
     }
 
+    public String getName()
+    {
+        return name;
+    }
+
     public void setColor(Color color)
     {
         this.color = color;
     }
 
-    private Color color;
-
     // private Set<World> worlds = null;
 
-    public Player(String name, Color color)
+    public void setName(String name)
     {
         this.name = name;
-        this.color = color;
     }
 
     public String toString()
